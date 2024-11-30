@@ -35,6 +35,7 @@ func main() {
 
 	handler.New(main, &usecase.Methods{
 		Stores: store.New(config),
+		Config: config,
 	})
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)

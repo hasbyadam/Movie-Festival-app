@@ -12,6 +12,11 @@ type Config struct {
 	Database struct {
 		Pg Pg `mapstructure:"pg"`
 	} `mapstructure:"database"`
+	Storage struct {
+		BasePath  string `mapstructure:"base_path"`
+		ImagePath string `mapstructure:"image_path"`
+		VideoPath string `mapstructure:"movie_path"`
+	}
 }
 
 type Pg struct {

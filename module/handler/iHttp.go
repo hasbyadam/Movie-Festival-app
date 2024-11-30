@@ -15,6 +15,8 @@ func New(e *echo.Group, usecase usecase.UsecaseInterface) {
 		Usecase: usecase,
 	}
 
-	e.GET("/test", handler.Test, handler.Usecase.Middleware)
+	upload := e.Group("/upload")
+	upload.POST("/image", handler.UploadImageFile)
+	upload.POST("/movie", handler.UploadMovieFile)
 
 }
