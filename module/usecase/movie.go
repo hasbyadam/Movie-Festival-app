@@ -45,9 +45,13 @@ func (u *Methods) UpsertMovies(ctx context.Context, req request.UpsertMovies) (e
 }
 
 func (u *Methods) UpsertMovieViewerships(ctx context.Context, req request.UpsertMovieViewerships) (err error) {
+	var id uuid.UUID = req.Id.UUID
+	if !req.Id.Valid {
+		id = uuid.New()
+	}
 
 	if err = u.Stores.UpsertMovieViewerships(ctx, entity.MovieViewerships{
-		Id:            req.Id,
+		Id:            id,
 		MovieId:       req.MovieId,
 		WatchDuration: req.WatchDuration,
 	}); err != nil {

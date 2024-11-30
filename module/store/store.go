@@ -88,7 +88,7 @@ order by count(mv.id) desc limit 1) as most_viewed_genre`
 
 func (c *Client) UpsertMovieViewerships(ctx context.Context, req entity.MovieViewerships) (err error) {
 	qs := `INSERT INTO movie_festival.movie_viewerships (id, movie_id, watch_duration, created_at)
-VALUES ($1, $2, $3, $4) on conflict do update set movie_id = $2, watch_duration = $3, updated_at $4`
+VALUES ($1, $2, $3, $4) on conflict (id) do update set movie_id = $2, watch_duration = $3, updated_at = $4`
 
 	if _, err = c.postgre.ExecContext(ctx, qs, req.Id, req.MovieId, req.WatchDuration, time.Now().Unix()); err != nil {
 		zap.S().Info(err)
@@ -111,7 +111,7 @@ func (c *Client) GetMoviesPublic(ctx context.Context, req request.GetMovies) (re
 		req.Offset = "0"
 	}
 
-	qs := `select * from (SELECT m.id, m.title, m.duration, m.actors, m.watch_url, m.description, m.poster_url, array_agg(g."name"), m.created_at as genres
+	qs := `select * from (SELECT m.id, m.title, m.duration, m.actors, m.watch_url, m.description, m.poster_url, array_agg(g."name") as genres, m.created_at
 FROM movie_festival.movies m 
 left join movie_festival.movie_genres mg on mg.movie_id = m.id 
 left join movie_festival.genres g on g.id = mg.genre_id 
@@ -126,8 +126,8 @@ group by m.id
 ) as list where 1 = 1 `
 
 	if req.Search != "" {
-		qs += fmt.Sprintf("and (list.title ilike '%%%s%%' or list.desc ilike '%%%s%%' or '%s' ilike any(list.actors) or '%s' ilike any(list.genres)) ", req.Search, req.Search, req.Search, req.Search)
-		qsCount += fmt.Sprintf("and (list.title ilike '%%%s%%' or list.desc ilike '%%%s%%' or '%s' ilike any(list.actors) or '%s' ilike any(list.genres)) ", req.Search, req.Search, req.Search, req.Search)
+		qs += fmt.Sprintf("and (list.title ilike '%%%s%%' or list.description ilike '%%%s%%' or '%s' ilike any(list.actors) or '%s' ilike any(list.genres)) ", req.Search, req.Search, req.Search, req.Search)
+		qsCount += fmt.Sprintf("and (list.title ilike '%%%s%%' or list.description ilike '%%%s%%' or '%s' ilike any(list.actors) or '%s' ilike any(list.genres)) ", req.Search, req.Search, req.Search, req.Search)
 	}
 
 	qs += fmt.Sprintf(" ORDER BY list.%s", req.Sort)
@@ -146,15 +146,17 @@ group by m.id
 
 	for row.Next() {
 		var arg response.Movies
+		var createdAt int64
 		if err = row.Scan(
-			arg.Id,
-			arg.Title,
-			arg.Duration,
-			pq.Array(arg.Actors),
-			arg.WatchUrl,
-			arg.Description,
-			arg.PosterUrl,
-			pq.Array(arg.Genres),
+			&arg.Id,
+			&arg.Title,
+			&arg.Duration,
+			pq.Array(&arg.Actors),
+			&arg.WatchUrl,
+			&arg.Description,
+			&arg.PosterUrl,
+			pq.Array(&arg.Genres),
+			&createdAt,
 		); err != nil {
 			zap.S().Info(err)
 			return

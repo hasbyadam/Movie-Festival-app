@@ -17,7 +17,7 @@ type UpsertMovies struct {
 }
 
 type UpsertMovieViewerships struct {
-	Id            uuid.UUID `json:"id"`
+	Id            uuid.NullUUID `json:"id"`
 	MovieId       uuid.UUID `json:"movieId"`
 	WatchDuration int64     `json:"watchDuration"`
 }
