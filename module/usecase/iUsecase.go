@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"movie-festival-app/entity"
 	"movie-festival-app/module/store"
+	"movie-festival-app/schema/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -22,6 +23,6 @@ func New(stores store.StoreInterface, config *entity.Config) UsecaseInterface {
 }
 
 type UsecaseInterface interface {
-	UploadFile(ctx context.Context, file multipart.File, header *multipart.FileHeader, contentType string) (path string, err error)
+	UploadFile(ctx context.Context, file multipart.File, header *multipart.FileHeader, contentType string) (res response.UploadFileResponse, err error)
 	Middleware(next echo.HandlerFunc) echo.HandlerFunc
 }

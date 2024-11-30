@@ -3,14 +3,19 @@ package handler
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"movie-festival-app/constant"
+	"movie-festival-app/pkg/util"
+	"movie-festival-app/schema/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 func (h *Handler) UploadMovieFile(c echo.Context) error {
+	var res response.UploadFileResponse
+
 	file, header, err := c.Request().FormFile("file")
 	if err != nil {
 		return err
@@ -38,18 +43,20 @@ func (h *Handler) UploadMovieFile(c echo.Context) error {
 		}
 	}
 	if !ok {
-		return c.JSON(400, "file type is not allowed")
+		return util.ErrorBadRequest(c, errors.New("invalid file type"), res)
 	}
 
-	res, err := h.Usecase.UploadFile(context.Background(), file, header, constant.Video)
+	res, err = h.Usecase.UploadFile(context.Background(), file, header, constant.Video)
 	if err != nil {
-		return c.JSON(500, err)
+		return util.ErrorInternalServerResponse(c, err, res)
 	}
 
-	return c.JSON(200, res)
+	return util.SuccessResponse(c, "success upload movie", res)
 }
 
 func (h *Handler) UploadImageFile(c echo.Context) error {
+	var res response.UploadFileResponse
+
 	file, header, err := c.Request().FormFile("file")
 	if err != nil {
 		return err
@@ -77,13 +84,13 @@ func (h *Handler) UploadImageFile(c echo.Context) error {
 		}
 	}
 	if !ok {
-		return c.JSON(400, "file type is not allowed")
+		return util.ErrorBadRequest(c, errors.New("invalid file type"), res)
 	}
 
-	res, err := h.Usecase.UploadFile(context.Background(), file, header, constant.Image)
+	res, err = h.Usecase.UploadFile(context.Background(), file, header, constant.Image)
 	if err != nil {
-		return c.JSON(500, err)
+		return util.ErrorInternalServerResponse(c, err, res)
 	}
 
-	return c.JSON(200, res)
+	return util.SuccessResponse(c, "success upload image", res)
 }
