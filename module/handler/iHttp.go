@@ -15,8 +15,13 @@ func New(e *echo.Group, usecase usecase.UsecaseInterface) {
 		Usecase: usecase,
 	}
 
-	upload := e.Group("/upload")
+	admin := e.Group("/admin")
+
+	upload := admin.Group("/upload")
 	upload.POST("/image", handler.UploadImageFile)
 	upload.POST("/movie", handler.UploadMovieFile)
 
+	adminMovie := admin.Group("/movie")
+	adminMovie.POST("", handler.UpsertMovies)
+	adminMovie.GET("/most-viewed", handler.GetMostViewedMovieAndGenre)
 }

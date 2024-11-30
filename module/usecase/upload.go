@@ -27,14 +27,14 @@ func (u *Methods) UploadFile(ctx context.Context, file multipart.File, header *m
 
 	f, err := os.Create(path)
 	if err != nil {
-		return 
+		return
 	}
 	defer f.Close()
 
 	if _, err = io.Copy(f, file); err != nil {
-		return 
+		return
 	}
 
 	res.Path = path
-	return 
+	return
 }

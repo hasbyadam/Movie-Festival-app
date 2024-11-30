@@ -18,5 +18,8 @@ func New(config *entity.Config) StoreInterface {
 }
 
 type StoreInterface interface {
-	Test(ctx context.Context)
+	UpsertMovies(ctx context.Context, req entity.Movie) (err error)
+	InsertMovieGenres(ctx context.Context, req []entity.MovieGenres) (err error)
+	GetMostViewedMovieAndGenre(ctx context.Context) (res entity.MostViewedMovieAndGenre, err error)
+	UpsertMovieViewerships(ctx context.Context, req entity.MovieViewerships) (err error)
 }
