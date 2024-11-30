@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"movie-festival-app/connection"
 	"movie-festival-app/entity"
+	"movie-festival-app/schema/request"
+	"movie-festival-app/schema/response"
 )
 
 type Client struct {
@@ -22,4 +24,5 @@ type StoreInterface interface {
 	InsertMovieGenres(ctx context.Context, req []entity.MovieGenres) (err error)
 	GetMostViewedMovieAndGenre(ctx context.Context) (res entity.MostViewedMovieAndGenre, err error)
 	UpsertMovieViewerships(ctx context.Context, req entity.MovieViewerships) (err error)
+	GetMoviesPublic(ctx context.Context, req request.GetMovies) (res response.GetMovies, err error)
 }

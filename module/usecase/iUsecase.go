@@ -26,4 +26,5 @@ type UsecaseInterface interface {
 	UpsertMovies(ctx context.Context, req request.UpsertMovies) (err error)
 	UpsertMovieViewerships(ctx context.Context, req request.UpsertMovieViewerships) (err error)
 	GetMostViewedMovieAndGenre(ctx context.Context) (res response.MostViewedMovieAndGenre, err error)
+	GetMoviesPublic(ctx context.Context, req request.GetMovies) (res response.GetMovies, err error)
 }

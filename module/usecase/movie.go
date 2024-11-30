@@ -70,3 +70,14 @@ func (u *Methods) GetMostViewedMovieAndGenre(ctx context.Context) (res response.
 
 	return
 }
+
+func (u *Methods) GetMoviesPublic(ctx context.Context, req request.GetMovies) (res response.GetMovies, err error) {
+
+	res, err = u.Stores.GetMoviesPublic(ctx, req)
+	if err != nil {
+		zap.S().Info(err)
+	}
+
+	return
+
+}

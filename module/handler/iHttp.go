@@ -24,4 +24,8 @@ func New(e *echo.Group, usecase usecase.UsecaseInterface) {
 	adminMovie := admin.Group("/movie")
 	adminMovie.POST("", handler.UpsertMovies)
 	adminMovie.GET("/most-viewed", handler.GetMostViewedMovieAndGenre)
+
+	public := e.Group("/public")
+	public.GET("/movie-list", handler.GetMoviesPublic)
+	public.POST("/movie-view", handler.UpsertMovieViewerships)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"movie-festival-app/pkg/util"
 	"movie-festival-app/schema/request"
+	"movie-festival-app/schema/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -45,4 +46,21 @@ func (h *Handler) GetMostViewedMovieAndGenre(c echo.Context) error {
 	}
 
 	return util.SuccessResponse(c, "success get", res)
+}
+
+func (h *Handler) GetMoviesPublic(c echo.Context) error {
+	var req request.GetMovies
+	var res response.GetMovies
+
+	err := c.Bind(&req)
+	if err != nil {
+		return util.ErrorInternalServerResponse(c, err, res)
+	}
+
+	res, err = h.Usecase.GetMoviesPublic(context.Background(), req)
+	 if err != nil {
+		return util.ErrorInternalServerResponse(c, err, nil)
+	}
+
+	return util.SuccessResponse(c, "success get movies", res)
 }

@@ -21,3 +21,11 @@ type UpsertMovieViewerships struct {
 	MovieId       uuid.UUID `json:"movieId"`
 	WatchDuration int64     `json:"watchDuration"`
 }
+
+type GetMovies struct {
+	Search string `query:"search"`
+	Sort   string `query:"sort"`
+	Order  string `query:"order"`
+	Limit  string `query:"limit"`
+	Offset string `query:"offset"`
+}
